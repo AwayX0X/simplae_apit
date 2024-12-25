@@ -1,10 +1,10 @@
 {
     "License_System":
     {
-        "mysql_host": "sql109.infinityfree.com",
-        "mysql_user": "if0_37981173",
-        "mysql_password": "T2OtwX3bEEl",
-        "mysql_database": "if0_37981173_license",
+        "mysql_host": "b1veowqt8ary9vpkssiu-mysql.services.clever-cloud.com",
+        "mysql_user": "usl9jdh3uelkk7yf",
+        "mysql_password": "9YDmZlY9oCrUB9HNCKI7",
+        "mysql_database": "b1veowqt8ary9vpkssiu",
         "mysql_timezone": "thai",
         "express_port": 3306
     }
