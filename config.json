@@ -1,11 +1,11 @@
 {
     "License_System":
     {
-        "mysql_host": "localhost",
-        "mysql_user": "root",
-        "mysql_password": "",
-        "mysql_database": "license",
+        "mysql_host": "b1veowqt8ary9vpkssiu-mysql.services.clever-cloud.com",
+        "mysql_user": "b1veowqt8ary9vpkssiu",
+        "mysql_password": "9YDmZlY9oCrUB9HNCKI7",
+        "mysql_database": "b1veowqt8ary9vpkssiu",
         "mysql_timezone": "thai",
-        "express_port": 3000
+        "express_port": 3306
     }
 }
