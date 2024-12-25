@@ -5,26 +5,46 @@ client.app.use(client.express.urlencoded({ extended: true }));
 client.mysql = require("mysql");
 client._ = require("./config.json");
 
-var db = client.mysql.createConnection({
-  host     : client._.License_System.mysql_host,
-  user     : client._.License_System.mysql_user,
-  password : client._.License_System.mysql_password,
-  database : client._.License_System.mysql_database,
-  timezone : client._.License_System.mysql_timezone
-});
+let db;
 
-db.connect(function(err) {
-  if (err) {
-    console.log('Error connecting to database');
-    return setTimeout(() => { process.exit(0); }, 2500);
-  } else {
-    console.log('Connected successfully to the database');
-  }
-  setInterval(function () { db.query('SELECT 1'); }, 5000); // Keep the connection alive
-});
+// Function to initialize the MySQL connection
+function initializeDatabaseConnection() {
+  db = client.mysql.createConnection({
+    host     : client._.License_System.mysql_host,
+    user     : client._.License_System.mysql_user,
+    password : client._.License_System.mysql_password,
+    database : client._.License_System.mysql_database,
+    timezone : client._.License_System.mysql_timezone
+  });
+
+  db.connect(function(err) {
+    if (err) {
+      console.error('Error connecting to the database:', err);
+      // Try reconnecting after 5 seconds
+      setTimeout(initializeDatabaseConnection, 5000);
+    } else {
+      console.log('Connected successfully to the database');
+    }
+  });
+
+  // Listen for errors on the connection and attempt to reconnect
+  db.on('error', function(err) {
+    console.error('Database connection error:', err);
+    // Trigger reconnection when an error occurs
+    initializeDatabaseConnection();
+  });
+}
+
+// Initialize database connection
+initializeDatabaseConnection();
+
+// Keep the connection alive
+setInterval(function () { 
+  db.query('SELECT 1'); 
+}, 5000); // Ping the database every 5 seconds
 
 // Set expired licenses by checking `total_time` values
-setInterval(function(){
+setInterval(function() {
   // Directly compare the DATETIME field `total_time` with `NOW()` minus 5 minutes
   db.query("UPDATE list SET `valid` = 'false' WHERE `total_time` <= DATE_SUB(NOW(), INTERVAL 5 MINUTE);");
 }, 60000); // Set expired licenses every minute
@@ -50,8 +70,8 @@ client.app.post('/license', (req, res) => {
   // Query to check the license in the database (Use parameterized queries to prevent SQL injection)
   db.query("SELECT * FROM list WHERE license = ?", [req.headers.license], function (err, result, fields) {
     if (err) {
-      console.error('Error in SQL query:', err);
-      return res.send({ status: "invalid" });
+      console.error('SQL Error:', err);
+      return res.status(500).send({ status: "invalid", message: "Database query failed" });
     }
 
     // If the license exists in the database
