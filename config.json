@@ -1,0 +1,11 @@
+{
+    "License_System":
+    {
+        "mysql_host": "localhost",
+        "mysql_user": "root",
+        "mysql_password": "",
+        "mysql_database": "license",
+        "mysql_timezone": "thai",
+        "express_port": 3000
+    }
+}
